@@ -39,6 +39,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public PostDTO getPostById(Long postId) {
+        // getting user from spring security context
         User user= (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = user.getId();
 

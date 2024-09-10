@@ -35,7 +35,6 @@ public class JwtAuthFilter  extends OncePerRequestFilter {
 
       try {
 
-
         final String requestTokenHeader = request.getHeader("Authorization");
         if (requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);

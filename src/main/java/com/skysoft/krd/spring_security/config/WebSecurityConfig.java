@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,12 +26,12 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth->{
                     auth.requestMatchers("/posts","/error","/public/**","/auth/**").permitAll();
 //                    auth.requestMatchers("/posts/**").hasRole("ADMIN");
-                    auth.anyRequest().authenticated();
+                    auth.anyRequest().authenticated(); //all should go to security filter chain
                 })
-                .csrf(csrfConfig->csrfConfig.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionConfig->
                         sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .formLogin(Customizer.withDefaults());
+//              .formLogin(Customizer.withDefaults());
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
 
@@ -45,6 +46,34 @@ public class WebSecurityConfig {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
