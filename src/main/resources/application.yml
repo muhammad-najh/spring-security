@@ -4,5 +4,3 @@ spring:
       client:
         registration:
           google:
-            client-id: yourkey
-            client-secret: yourkey
