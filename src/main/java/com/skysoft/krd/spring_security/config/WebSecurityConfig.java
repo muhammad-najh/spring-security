@@ -1,6 +1,7 @@
 package com.skysoft.krd.spring_security.config;
 
 import com.skysoft.krd.spring_security.filters.JwtAuthFilter;
+import com.skysoft.krd.spring_security.handlers.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,19 +21,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtAuthFilter JwtAuthFilter;
+    private final OAuth2SuccessHandler auth2SuccessHandler;
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtAuthFilter jwtAuthFilter) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth->{
-                    auth.requestMatchers("/posts","/error","/public/**","/auth/**").permitAll();
+                    auth.requestMatchers("/posts","/error","/public/**","/auth/**","/home.html").permitAll();
 //                    auth.requestMatchers("/posts/**").hasRole("ADMIN");
                     auth.anyRequest().authenticated(); //all should go to security filter chain
                 })
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionConfig->
                         sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //              .formLogin(Customizer.withDefaults());
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .oauth2Login(oath2Config->oath2Config.
+                        failureUrl("/login?error=true")
+                        .successHandler(auth2SuccessHandler)
+                );
 
 
         return httpSecurity.build();
