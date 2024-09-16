@@ -1,7 +1,7 @@
 package com.skysoft.krd.spring_security.services;
 
 
-import com.skysoft.krd.spring_security.dto.PostDTO;
+import com.skysoft.krd.spring_security.dto.PostDto;
 import com.skysoft.krd.spring_security.entities.PostEntity;
 import com.skysoft.krd.spring_security.entities.User;
 import com.skysoft.krd.spring_security.exceptions.ResourceNotFoundException;
@@ -23,30 +23,29 @@ public class PostServiceImpl implements PostService{
     private final ModelMapper modelMapper;
 
     @Override
-    public List<PostDTO> getAllPosts() {
+    public List<PostDto> getAllPosts() {
         return postRepository
                 .findAll()
                 .stream()
-                .map(postEntity -> modelMapper.map(postEntity, PostDTO.class))
+                .map(postEntity -> modelMapper.map(postEntity, PostDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public PostDTO createNewPost(PostDTO inputPost) {
+    public PostDto createNewPost(PostDto inputPost) {
+
+        User user= (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PostEntity postEntity = modelMapper.map(inputPost, PostEntity.class);
-        return modelMapper.map(postRepository.save(postEntity), PostDTO.class);
+        postEntity.setAuthor(user);
+        return modelMapper.map(postRepository.save(postEntity), PostDto.class);
     }
 
     @Override
-    public PostDTO getPostById(Long postId) {
-        // getting user from spring security context
-        User user= (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = user.getId();
+    public PostDto getPostById(Long postId) {
 
-        log.info("Getting User in Context: {}", user);
         PostEntity postEntity = postRepository
                 .findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with id "+postId));
-        return modelMapper.map(postEntity, PostDTO.class);
+        return modelMapper.map(postEntity, PostDto.class);
     }
 }

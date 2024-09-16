@@ -1,15 +1,15 @@
 package com.skysoft.krd.spring_security.services;
 
 
-import com.skysoft.krd.spring_security.dto.PostDTO;
+import com.skysoft.krd.spring_security.dto.PostDto;
 
 import java.util.List;
 
 public interface PostService {
 
-    List<PostDTO> getAllPosts();
+    List<PostDto> getAllPosts();
 
-    PostDTO createNewPost(PostDTO inputPost);
+    PostDto createNewPost(PostDto inputPost);
 
-    PostDTO getPostById(Long postId);
+    PostDto getPostById(Long postId);
 }
